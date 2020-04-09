@@ -146,7 +146,10 @@ class Base:
         if self.is_closed:
             return
 
-        await self.loop.create_task(self.__closer(exc))
+        try:
+            await self.loop.create_task(self.__closer(exc))
+        except asyncio.CancelledError:
+            return
 
     def __repr__(self):
         cls_name = self.__class__.__name__
